@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors())
 
-//app.use(express.static("__dirname" + "/uploads"));
+app.use(express.static(__dirname + "/uploads"));
 
 
 // Routes
