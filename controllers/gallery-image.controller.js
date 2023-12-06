@@ -18,8 +18,8 @@ const createImage = async (req, res) => {
      image: result.secure_url,
    });
   
-  fs.unlink(image.path);
   await newGalleryImage.save();
+  fs.unlink(image.path);
   console.log(req.files);
   res.status(200).json({ message: "Imagen creada correctamente", ok: true });
 };
