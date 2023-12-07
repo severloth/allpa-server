@@ -21,8 +21,9 @@ const createProduct = async (req, res) => {
      image: result.secure_url,
    });
   
-  fs.unlink(image.path);
+ 
   await newProduct.save();
+  fs.unlink(image.path);
   console.log(req.files);
   res.status(200).json({ message: "Producto creado correctamente", ok: true });
 };
@@ -37,7 +38,7 @@ const updateProduct= async (req, res) => {
     const result = await cloudinary.v2.uploader.upload(image.path);
     product.public_id = result.public_id;
     product.image = result.secure_url;
-    fs.unlink(image.path);
+
   }
 
   Object.keys(req.body).forEach((key) => {
@@ -45,6 +46,7 @@ const updateProduct= async (req, res) => {
   });
 
   await product.save();
+  fs.unlink(image.path);
   res
     .status(200)
     .json({ message: "Producto actualizado correctamente", ok: true });

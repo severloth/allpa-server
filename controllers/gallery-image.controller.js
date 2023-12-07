@@ -38,13 +38,14 @@ const updateImage= async (req, res) => {
   }
 
   Object.keys(req.body).forEach((key) => {
-    product[key] = req.body[key];
+    galleryImage[key] = req.body[key];
   });
 
   await galleryImage.save();
   res
     .status(200)
     .json({ message: "Imagen actualizada correctamente", ok: true });
+    
    
 }
 

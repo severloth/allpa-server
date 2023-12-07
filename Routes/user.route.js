@@ -25,6 +25,9 @@ const multipart = require("connect-multiparty");
 
 const md_upload = multipart({ uploadDir: "./uploads" });
 
+
+router.post("/login", asureAuth);
+
 router.get("/", getProducts);
 router.post("/create", [configureCloudinary, md_upload], createProduct);
 router.patch("/update/:product_id", [configureCloudinary, md_upload] , updateProduct);
