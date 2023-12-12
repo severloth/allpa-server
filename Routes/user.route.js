@@ -5,6 +5,7 @@ const {
   createProduct,
   deleteProduct,
   getProducts,
+  updateImageProduct,
   updateProduct,
 
 } = require("../controllers/user.controller.js");
@@ -29,8 +30,10 @@ const md_upload = multipart({ uploadDir: "./uploads" });
 router.post("/login", asureAuth);
 
 router.get("/", getProducts);
+router.get("/product/:product_id", getProducts);
 router.post("/create", [configureCloudinary, md_upload], createProduct);
 router.patch("/update/:product_id", [configureCloudinary, md_upload] , updateProduct);
+router.patch("/updateimg/:product_id/:image_id", [configureCloudinary, md_upload] , updateImageProduct);
 router.delete("/delete/:product_id", [configureCloudinary], deleteProduct);
 
 
