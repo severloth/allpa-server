@@ -17,7 +17,7 @@ const getProducts = async (req, res) => {
 /*  */
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category } = req.body;
+    const { name, description, price, category, color } = req.body;
     let images = req.files.images;
 
     if (!Array.isArray(images)) {
@@ -51,6 +51,7 @@ const createProduct = async (req, res) => {
       price,
       category,
       images: uploadedImages,
+      color,
     });
 
     await newProduct.save();

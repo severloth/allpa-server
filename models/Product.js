@@ -11,7 +11,8 @@ const ProductSchema = new Schema({
         public_id: String,
       }
     ],
-    category: String
+    category: String,
+    color: String,
   });
   
 
