@@ -52,6 +52,10 @@ const createProduct = async (req, res) => {
       category,
       images: uploadedImages,
       color,
+      nameEnglish,
+      descriptionEnglish,
+      categoryEnglish,
+      colorEnglish,
     });
 
     await newProduct.save();
