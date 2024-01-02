@@ -7,6 +7,7 @@ const {
   getProducts,
   updateImageProduct,
   updateProduct,
+  createImg,
 
 } = require("../controllers/user.controller.js");
 
@@ -35,6 +36,7 @@ router.post("/create", [configureCloudinary, md_upload], createProduct);
 router.patch("/update/:product_id", [configureCloudinary, md_upload] , updateProduct);
 router.patch("/updateimg/:product_id/:image_id", [configureCloudinary, md_upload] , updateImageProduct);
 router.delete("/delete/:product_id", [configureCloudinary], deleteProduct);
+router.post("/createImg/:product_id", [configureCloudinary, md_upload], createImg);
 
 
 router.get("/gallery", getImages);

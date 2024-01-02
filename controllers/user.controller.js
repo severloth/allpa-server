@@ -70,47 +70,42 @@ const createProduct = async (req, res) => {
 const updateImageProduct = async (req, res) => {
   try {
     const { product_id, image_id } = req.params;
+    const { imageUnit } = req.files;
     const product = await Product.findById(product_id);
-
+    console.log("Hay que actualizar la imagen");
     if (!product) {
       return res.status(404).json({ message: "Producto no encontrado", ok: false });
     }
-
-    const { images } = req.files;
-    const public_ids = product.images.map((image) => image.public_id);
     const imageFiltered = product.images.find((image) => image._id == image_id);
+    console.log(imageFiltered);
+     if(imageUnit){
+        await cloudinary.v2.api.delete_resources(imageFiltered.public_id);
+        const public =  await cloudinary.v2.uploader.upload(imageUnit.path);
+        product.images = product.images.map((image) => {
+          if (image._id == image_id) {
+            image.public_id = public.public_id;
+            image.secure_url = public.secure_url;
+          }
+          return image;
+        });
+        fs.unlink(imageUnit.path);
+        
+        await product.save();
+        res.status(200).json({ message: "Imagen actualizada correctamente", ok: true });
+      
+  
+     } else{
+       res.status(500).json({ message: "Error interno del servidor", ok: false });
+  
+     }
     const img = {};
  
-
-    await cloudinary.v2.api.delete_resources(imageFiltered.public_id);
-    await cloudinary.v2.uploader.upload(images.path, (error, result) => {
-      if (error) {
-        console.error("Error al subir imagen a Cloudinary:", error);
-        throw error;
-      }
-      console.log(result);
-      img.public_id = result.public_id;
-      img.secure_url = result.secure_url;
-      fs.unlink(images.path);
-    
-    
-
-    });
- 
-
-    //save product
-    await Product.findByIdAndUpdate(
-      product_id,
-      { images: img },
-      { new: true }
-    );
-    res.status(200).json({ message: "Producto actualizado correctamente", ok: true });
   
-    
-   } catch (error) {
+    } catch (error) {
     console.error("Error al actualizar el producto:", error);
-    res.status(500).json({ message: "Error interno del servidor", ok: false });
-   }
+   res.status(500).json({ message: "Error interno del servidor", ok: false });
+  }
+  
  };
 
 const updateProduct = async (req, res) => {
@@ -148,6 +143,31 @@ const deleteProduct = async (req, res) => {
       .json({ message: "Producto eliminado correctamente", ok: true });
 
 };
+
+const createImg = async (req, res) =>{ 
+  const { product_id } = req.params;
+  const product = await Product.findById(product_id);
+  const { imageUnit }  = req.files;
+
+  if(imageUnit){
+    const public =  await cloudinary.v2.uploader.upload(imageUnit.path);
+    const img = {};
+    img.public_id = public.public_id;
+    img.secure_url = public.secure_url;
+    fs.unlink(imageUnit.path);
+    product.images.push(img);
+    await product.save();
+    res.status(200).json({ message: "Imagen creada correctamente", ok: true });
+
+  } else{
+    res.status(500).json({ message: "Error interno del servidor", ok: false });
+
+  }
+
+
+    
+
+}
 /*  */
 
 
@@ -157,4 +177,5 @@ module.exports = {
   deleteProduct,
   updateImageProduct,
   updateProduct,
+  createImg,
 };
