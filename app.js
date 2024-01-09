@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require("path");
 const cookieParser = require("cookie-parser");
 const nodemailer = require("nodemailer");
 
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors())
 
-app.use(express.static(__dirname + "/uploads"));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // Routes

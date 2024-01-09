@@ -19,24 +19,32 @@ const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, color, nameEnglish, descriptionEnglish, categoryEnglish, colorEnglish } = req.body;
     let images = req.files.images;
+    console.log(images);
 
-    if (!Array.isArray(images)) {
-      images = [images];
-    }
+    const uploadedImages = [];
 
-    const uploadPromises = images.map(async (image) => {
+    // Sube las imágenes a Cloudinary
+    console.log(images);
+    if(images){
+      if (!Array.isArray(images)) {
+        images = [images];
+      }
+
+    /* const uploadPromises = images.map(async (image) => {
       try {
         const result = await cloudinary.v2.uploader.upload(image.path);
         return { public_id: result.public_id, secure_url: result.secure_url };
       } catch (uploadError) {
         console.error("Error al subir imagen a Cloudinary:", uploadError);
         throw uploadError;
-      }
+      } 
     });
 
-    const uploadedImages = await Promise.all(uploadPromises);
+
+    uploadedImages = await Promise.all(uploadPromises);
 
     // Elimina archivos temporales después de subir a Cloudinary
+    console.time("Eliminación de archivos locales");
     images.forEach((image) => {
       fs.unlink(image.path, (unlinkError) => {
         if (unlinkError) {
@@ -44,13 +52,21 @@ const createProduct = async (req, res) => {
         }
       });
     });
+    console.timeEnd("Eliminación de archivos locales"); */
 
+  }
+
+
+    
+    
+    console.time("Creación de producto");
     const newProduct = new Product({
+      productId: new Date().getTime(),
       name,
       description,
       price,
       category,
-      images: uploadedImages,
+      images: images,
       color,
       nameEnglish,
       descriptionEnglish,
@@ -59,6 +75,7 @@ const createProduct = async (req, res) => {
     });
 
     await newProduct.save();
+    console.timeEnd("Creación de producto");
 
     res.status(200).json({ message: "Producto creado correctamente", ok: true });
   } catch (error) {
@@ -82,7 +99,7 @@ const updateImageProduct = async (req, res) => {
         await cloudinary.v2.api.delete_resources(imageFiltered.public_id);
         const public =  await cloudinary.v2.uploader.upload(imageUnit.path);
         product.images = product.images.map((image) => {
-          if (image._id == image_id) {
+          if (image._id == image_id) { 
             image.public_id = public.public_id;
             image.secure_url = public.secure_url;
           }

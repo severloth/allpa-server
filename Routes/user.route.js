@@ -39,6 +39,7 @@ router.delete("/delete/:product_id", [configureCloudinary], deleteProduct);
 router.post("/createImg/:product_id", [configureCloudinary, md_upload], createImg);
 
 
+
 router.get("/gallery", getImages);
 router.post("/gallery/create", [configureCloudinary, md_upload], createImage);
 router.patch("/gallery/update/:image_id", [configureCloudinary, md_upload] , updateImage);
