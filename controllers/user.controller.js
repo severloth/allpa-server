@@ -152,7 +152,19 @@ const deleteProduct = async (req, res) => {
     const { product_id } = req.params;
     const product = await Product.findById(product_id);
     console.log(product);
-    await cloudinary.v2.api.delete_resources(product.public_id);
+
+    for (const image of product.images) {
+      if(image.public_id){
+      await cloudinary.v2.api.delete_resources(image.public_id);
+      }
+      else if(image.path){
+        const path = image.path;
+
+        fs.unlinkSync(path);
+      }
+
+    }
+
 
     await Product.findByIdAndDelete(product_id);
       res
